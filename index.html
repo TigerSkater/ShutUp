@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shut Up Button</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap');
 
+    :root {
+      --bg: #fff0f6; /* soft pink */
+      --fg: #4a4a4a;
+      --accent: #ff85a2; /* rosy */
+      --accent-hover: #ff6f91;
+      --accent-contrast: #ffffff;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Quicksand', sans-serif;
+    }
+    button {
+      font-size: clamp(20px, 4vw, 28px);
+      padding: 1rem 2rem;
+      border-radius: 2rem;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      font-weight: 600;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+      transition: all 180ms ease;
+    }
+    button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
+    }
+    button:active { transform: translateY(1px) scale(0.98); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+    .note {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      opacity: 0.6;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <!-- Update the src below to match your actual filename in the /audio folder -->
+  <audio id="shutup-audio" preload="auto">
+    <source src="audio/shut-up.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
+  <button id="playBtn" type="button" aria-describedby="hint">Shut up</button>
+  <p id="hint" class="sr-only">Press the button to play the 'shut up' voice clip.</p>
+  <div class="note">Make sure your MP3 is at <code>/audio/shut-up.mp3</code> or update the path.</div>
+
+  <script>
+    (function () {
+      const btn = document.getElementById('playBtn');
+      const audio = document.getElementById('shutup-audio');
+
+      function playFromStart() {
+        try {
+          audio.currentTime = 0;
+          const playPromise = audio.play();
+          if (playPromise && typeof playPromise.then === 'function') {
+            playPromise.catch(err => {
+              console.warn('Playback prevented until user interaction or file missing:', err);
+            });
+          }
+        } catch (err) {
+          console.error('Playback error:', err);
+        }
+      }
+
+      btn.addEventListener('click', playFromStart);
+      btn.addEventListener('keydown', (e) => {
+        if (e.code === 'Enter' || e.code === 'Space') {
+          e.preventDefault();
+          playFromStart();
+        }
+      });
+
+      if (navigator.vibrate) {
+        btn.addEventListener('click', () => navigator.vibrate(15));
+      }
+
+      audio.addEventListener('error', () => {
+        btn.disabled = true;
+        btn.textContent = 'Audio not found';
+        document.querySelector('.note').textContent = 'Could not load audio. Check the file path: /audio/shut-up.mp3';
+      });
+    })();
+  </script>
+</body>
+</html>
