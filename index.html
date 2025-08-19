@@ -26,9 +26,9 @@
       font-family: 'Quicksand', sans-serif;
     }
     button {
-      font-size: clamp(20px, 4vw, 28px);
-      padding: 1rem 2rem;
-      border-radius: 2rem;
+      font-size: clamp(28px, 6vw, 40px);
+      padding: 1.5rem 3rem;
+      border-radius: 3rem;
       border: 2px solid var(--accent);
       cursor: pointer;
       background: var(--accent);
@@ -48,19 +48,9 @@
     .sr-only {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
     }
-    .note {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 14px;
-      opacity: 0.6;
-      font-style: italic;
-    }
   </style>
 </head>
 <body>
-  <!-- Update the src below to match your actual filename in the /audio folder -->
   <audio id="shutup-audio" preload="auto">
     <source src="audio/shut-up.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
@@ -68,7 +58,6 @@
 
   <button id="playBtn" type="button" aria-describedby="hint">Shut up</button>
   <p id="hint" class="sr-only">Press the button to play the 'shut up' voice clip.</p>
-  <div class="note">Make sure your MP3 is at <code>/audio/shut-up.mp3</code> or update the path.</div>
 
   <script>
     (function () {
@@ -104,7 +93,6 @@
       audio.addEventListener('error', () => {
         btn.disabled = true;
         btn.textContent = 'Audio not found';
-        document.querySelector('.note').textContent = 'Could not load audio. Check the file path: /audio/shut-up.mp3';
       });
     })();
   </script>
